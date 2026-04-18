@@ -4,7 +4,7 @@
 SELECT npi, SUM(total_claim_count) AS total_claims
 FROM prescription
 GROUP BY npi
-ORDER BY total_claims DESC
+ORDER BY total_claims DESC;
 
 
 --Q1 B
@@ -206,13 +206,14 @@ WHERE prescriber.specialty_description ='Pain Management'
 --Q7(B)
 
 
-SELECT prescriber.npi, drug.drug_name, COALESCE(prescription.total_claim_count, 0) AS total_claim_count
+SELECT prescriber.npi, drug.drug_name, SUM(COALESCE(prescription.total_claim_count, 0)) AS total_claim_count
 FROM prescriber
 CROSS JOIN drug
 LEFT JOIN prescription ON prescription.npi = prescriber.npi AND prescription.drug_name = drug.drug_name
 WHERE prescriber.specialty_description ='Pain Management'
 	AND prescriber.nppes_provider_city = 'NASHVILLE'
 	AND drug.opioid_drug_flag ='Y'
+GROUP BY prescriber.npi, drug.drug_name
 ORDER BY total_claim_count DESC;
 
 
